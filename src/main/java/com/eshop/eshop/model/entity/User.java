@@ -1,85 +1,97 @@
 package com.eshop.eshop.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     private int id;
-     String name;
-     String email;
-     String password;
-     String address;
-     String phone;
+    private Integer id;
 
-     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-     private List<Order> orders;
+    @NotBlank(message = "Name cannot be blank")
+    private String name;
 
-     public String getName(){
-         return name;
-     }
-     public void setName(String newName){
-         if(newName != null && !newName.isEmpty()){
-             this.name = newName;
-         }else {
-             System.out.println("Enter Name");
-         }
-     }
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email cannot be blank")
+    @Column(unique = true)
+    private String email;
 
-    public String getEmail(){
-        return email;
-    }
-    public void setEmail(String newemail){
-        if(newemail != null && !newemail.isEmpty()){
-            this.email = newemail;
-        }else {
-            System.out.println("Enter your email");
-        }
-    }
+//    @Size(min = 8, message = "Password must be at least 8 characters long")
+//    private String password;
 
-    public String getPassword(){
-        return password;
-    }
-    public void setPassword(String newpassword){
-        if(newpassword != null && !newpassword.isEmpty()){
-            this.password = newpassword;
-        }else {
-            System.out.println("Enter password");
-        }
-    }
+    @NotBlank(message = "Address cannot be blank")
+    private String address;
 
-    public String getAddress(){
-        return address;
-    }
-    public void setAddress(String newaddress){
-        if(newaddress != null && !newaddress.isEmpty()){
-            this.address = newaddress;
-        }else {
-            System.out.println("Enter your address");
-        }
-    }
+    @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
+    @Column(unique = true)
+    private String phone;
 
-    public String getPhone(){
-        return phone;
-    }
-    public void setPhone(String newaphone){
-        if(newaphone != null && !newaphone.isEmpty()){
-            this.phone = newaphone;
-        }else {
-            System.out.println("Enter your phone number");
-        }
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> orders;
 
+    // ---------- Getters & Setters ----------
 
-    public int getId(){
+    public Integer getId() {
         return id;
     }
-    public int setId(int newId){
-            this.id = newId;
-        return newId;
+
+    public void setId(Integer id) {
+        this.id = id;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name; // Validation handled by @NotBlank
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email; // Format validation by @Email
+    }
+
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password; // Length validation by @Size
+//    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone; // Regex validation by @Pattern
+    }
+//
+//    public List<Order> getOrders() {
+//        return orders;
+//    }
+//
+//    public void setOrders(List<Order> orders) {
+//        this.orders = orders;
+//    }
 }

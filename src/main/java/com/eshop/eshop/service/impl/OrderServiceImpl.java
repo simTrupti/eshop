@@ -19,6 +19,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    // ✅ Create Order
     @Override
     public Order createOrder(Order order) {
         //order.setId(IdGenerator.generateId());
@@ -34,13 +35,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(int id) {
-//        for (Order order : orders) {
-//            if (order.getId() == id) {
-//                return order;
-//            }
-//        }
-//        return null;
-        return  orderRepository.findById(id).orElse(null);
+    public Optional<Order> getOrderById(int id) {
+        return orderRepository.findById(id);
     }
 }

@@ -1,22 +1,32 @@
 package com.eshop.eshop.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank(message = "Order date is required")
     private String orderDate;
+
+    @Positive(message = "Total amount must be positive")
     private double totalAmount;
+
+    @NotBlank(message = "Status is required")
     private String status;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @NotNull(message = "User is required")
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
@@ -40,11 +50,7 @@ public class Order {
         return orderDate;
     }
     public void setOrderDate(String orderDate) {
-        if(orderDate != null && !orderDate.isEmpty()) {
             this.orderDate = orderDate;
-        } else {
-            System.out.println("Order date is required");
-        }
     }
 
     public double getTotalAmount() {
@@ -58,11 +64,7 @@ public class Order {
         return status;
     }
     public void setStatus(String status) {
-        if(status != null && !status.isEmpty()) {
             this.status = status;
-        } else {
-            System.out.println("Status is required");
-        }
     }
 }
 

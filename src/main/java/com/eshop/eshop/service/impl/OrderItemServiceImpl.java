@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderItemServiceImpl implements OrderItemService {
@@ -32,14 +33,14 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public OrderItem getOrderItemById(int id) {
+    public Optional<OrderItem> getOrderItemById(int id) {
 //        for (OrderItem item : orderItems) {
 //            if (item.getId() == id) {
 //                return item;
 //            }
 //        }
 //        return null;
-        return orderItemRepository.findById(id).orElse(null);
+        return orderItemRepository.findById(id);
     }
 
 }

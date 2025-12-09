@@ -21,8 +21,8 @@ public class UserController {
 
     // ✅ Create User
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        User createdUser = userService.createUser(user);
+    public ResponseEntity<List<User>> createUser(@Valid @RequestBody List<User> user) {
+        List<User> createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
@@ -57,6 +57,7 @@ public class UserController {
     @GetMapping("/gmailid")
     public ResponseEntity<List<String>> grtGmailIds(){
         return  ResponseEntity.ok(userService.getGoogleEmailId());
+
     }
 
     

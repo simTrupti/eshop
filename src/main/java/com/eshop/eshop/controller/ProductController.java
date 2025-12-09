@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -22,9 +23,9 @@ public class ProductController {
 
     // ✅ Create Product with validation
     @PostMapping
-    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody List<Product> products) {
         try {
-            Product createdProduct = productService.createProduct(product);
+            List<Product> createdProduct = productService.createProduct(products);
             return ResponseEntity.status(201).body(createdProduct);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error creating product: " + e.getMessage());
@@ -42,6 +43,14 @@ public class ProductController {
         }
     }
 
+    //get Categories count
+    @GetMapping("/countcategory")
+    public ResponseEntity<Map<String, Long>> getCategoryCount(){
+        return ResponseEntity.ok(productService.getProductCountByCategory());
+    }
+
+
+
 //    // ✅ Get product by ID
 //    @GetMapping("/{id}")
 //    public ResponseEntity<?> getProductById(@PathVariable Integer id) {
@@ -56,35 +65,37 @@ public class ProductController {
 //        }
 //    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getProductByIddto(@PathVariable Integer id){
-        try{
-            ProductResponse product = productService.getProductByIdDto(id);
-            return ResponseEntity.ok(product);
-        }catch (RuntimeException e){
-            return ResponseEntity.status(404).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<?> getProductByIddto(@PathVariable Integer id){
+//        try{
+//            ProductResponse product = productService.getProductByIdDto(id);
+//            return ResponseEntity.ok(product);
+//        }catch (RuntimeException e){
+//            return ResponseEntity.status(404).body(e.getMessage());
+//        }catch (Exception e){
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<?> listProducts(
+//            @RequestParam(value="q", required=false) String q,
+//            @RequestParam(value="category", required=false) String category,
+//            @RequestParam(value="min", required=false) Double min,
+//            @RequestParam(value="max", required=false) Double max,
+//            @RequestParam(value="page", defaultValue="0") int page,
+//            @RequestParam(value="size", defaultValue="20") int size,
+//            @RequestParam(value="sort", defaultValue="id,asc") String sort
+//    ) {
+//        try {
+//            Page<ProductResponse> results = productService.listProducts(q, category, min, max, page, size, sort);
+//            return ResponseEntity.ok(results);
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
-    }
 
-    @GetMapping
-    public ResponseEntity<?> listProducts(
-            @RequestParam(value="q", required=false) String q,
-            @RequestParam(value="category", required=false) String category,
-            @RequestParam(value="min", required=false) Double min,
-            @RequestParam(value="max", required=false) Double max,
-            @RequestParam(value="page", defaultValue="0") int page,
-            @RequestParam(value="size", defaultValue="20") int size,
-            @RequestParam(value="sort", defaultValue="id,asc") String sort
-    ) {
-        try {
-            Page<ProductResponse> results = productService.listProducts(q, category, min, max, page, size, sort);
-            return ResponseEntity.ok(results);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
 }

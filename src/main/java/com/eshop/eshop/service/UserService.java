@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -62,6 +63,22 @@ public class UserService {
 
     public Optional<User> getUserByIdOptional(Integer id){
         return userRepository.findById(id);
+    }
+
+    public List<String> getSortedNames(){
+        List<String> names = userRepository.findAllUserNames();
+
+        names.sort( (name1, name2) -> name1.compareToIgnoreCase(name2));
+
+        return names;
+    }
+
+    public List<String> getGoogleEmailId(){
+        List<String> emails = userRepository.findAllEmail();
+
+        List<String> emailid = emails.stream().filter(email -> email.endsWith("@gmail.com")).toList();
+
+        return emailid;
     }
 
 }

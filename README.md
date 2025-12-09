@@ -62,8 +62,6 @@ API Testing
 All APIs are tested using Postman. REST standards with proper HTTP status codes are followed.
 
 
-//chNGE
-//intellij check
 
 
 

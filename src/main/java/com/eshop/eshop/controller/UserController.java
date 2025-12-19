@@ -21,16 +21,16 @@ public class UserController {
 
     // ✅ Create User
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        User createdUser = userService.createUser(user);
+    public ResponseEntity<List<User>> createUser(@Valid @RequestBody List<User> user) {
+        List<User> createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
     // ✅ Get All Users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.getAllUsers());
+
     }
 
     // ✅ Get User By ID
@@ -45,5 +45,21 @@ public class UserController {
                 .map(ResponseEntity::ok) // if present → 200 OK
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()); // if absent → 404
     }
+
+    //Get UserNames sorted List
+    @GetMapping("/sorted-names")
+    public ResponseEntity<List<String>> getSortedUserNames(){
+        return ResponseEntity.ok(userService.getSortedNames());
+
+    }
+
+    //get google email id list
+    @GetMapping("/gmailid")
+    public ResponseEntity<List<String>> grtGmailIds(){
+        return  ResponseEntity.ok(userService.getGoogleEmailId());
+
+    }
+
+    
 
 }

@@ -10,46 +10,41 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    //List<User> users = new ArrayList<>();
     @Autowired
     private UserRepository userRepository;
 
    // private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // ✅ Java 8 Optional + Lambda style duplicate check
-    public User createUser(User user) {
+    public List<User> createUser(List<User> users) {
 
-       //checks the duplicate
-//       if(userRepository.findByEmail(user.getEmail()).isPresent()){
-//           throw new IllegalArgumentException("Email already registered");
-//       }
+        users.forEach(user -> {
 
-        userRepository.findByEmail(user.getEmail()).ifPresent(existingUser -> { throw new IllegalArgumentException("Email already registered");});
+                    userRepository.findByEmail(user.getEmail())
+                            .ifPresent(existingUser -> {
+                                throw new IllegalArgumentException("Email already registered");
+                            });
+
+                    userRepository.findByPhone(user.getPhone())
+                            .ifPresent(existingUser -> {
+                                throw new IllegalArgumentException(" Phone number already in use ");
+                            });
 
 
-//       if (userRepository.findByPhone(user.getPhone()).isPresent()) {
-//           throw new IllegalArgumentException("Phone number already in use");
-//       }
-
-        userRepository.findByPhone(user.getPhone()).ifPresent(existingUser -> { throw new IllegalArgumentException(" Phone number already in use ");});
-
+        });
       // user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-
-
-//user.setId(IdGenerator.generateId());
-   // users.add(user);
-   // return user;
-       return  userRepository.save(user);
+       return  userRepository.saveAll(users);
 
    }
 
+   // Get all users
    public List<User> getAllUsers(){
-       //return  users;
+
        return userRepository.findAll();
    }
 
@@ -62,6 +57,22 @@ public class UserService {
 
     public Optional<User> getUserByIdOptional(Integer id){
         return userRepository.findById(id);
+    }
+
+    public List<String> getSortedNames(){
+        List<String> names = userRepository.findAllUserNames();
+
+        names.sort( (name1, name2) -> name1.compareToIgnoreCase(name2));
+
+        return names;
+    }
+
+    public List<String> getGoogleEmailId(){
+        List<String> emails = userRepository.findAllEmail();
+
+        List<String> emailid = emails.stream().filter(email -> email.endsWith("@gmail.com")).toList();
+
+        return emailid;
     }
 
 }

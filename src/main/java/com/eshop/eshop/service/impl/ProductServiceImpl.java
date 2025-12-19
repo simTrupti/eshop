@@ -16,117 +16,59 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
- public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl implements ProductService {
 
-   // List<Product> products = new ArrayList<>();
     @Autowired
     private ProductRepository productRepository;
 
     @Override
-    public Product createProduct(Product product){
+    public List<Product> createProduct(List<Product> products) {
 
-        //normalise names
-        product.setName(product.getName().toLowerCase());
+    // Loop through each product one by one
+    products.forEach(p -> {
 
-        //check duplicate
-        if(productRepository.findByName(product.getName()).isPresent()){
-            throw new IllegalArgumentException("Product already exists");
+        // Normalize the product name
+        p.setName(p.getName().toLowerCase());
 
-        }
+        // Check for duplicate name
+        productRepository.findByName(p.getName())
+                .ifPresent(existing -> {
+                    throw new IllegalArgumentException(
+                            "Product already exists: " + p.getName()
+                    );
+                });
+    });
 
-       // product.setId(IdGenerator.generateId());
-       // products.add(product);
-        //return product;
-        return productRepository.save(product);
+    // Save all products in one go
+    return productRepository.saveAll(products);
+}
 
-    }
 
-@Override
-    public List<Product> getAllProducts(){
 
-        //return  products;
+    // ✅ Get All Products
+    @Override
+    public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-//    @Override
-//    public Product getProductById(int id){
-//        for(Product product: products) {
-//            if (product.getId() == id) {
-//                return product;
-//            }
-//
-//        }
-//        return null;
-//        Optional<Product> opt = productRepository.findById(id);
-//        return opt.orElse(null);
-//    }
-
     @Override
-    public ProductResponse getProductByIdDto(Integer id){
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+    public Map<String, Long> getProductCountByCategory() {
 
-        ProductResponse response = new ProductResponse();
-        response.setId(product.getId());
-        response.setName(product.getName());
-        response.setDescription(product.getDescription());
-        response.setPrice(product.getPrice());
-        response.setQuantity(product.getQuantity());
-        response.setCategory(product.getCategory());
-        response.setCreateAt(product.getCreatedAt());
-        response.setUpdateAt(product.getUpdatedAt());
+            return  productRepository.findAll().stream()
+                    .collect(Collectors.groupingBy(
+                            Product::getCategory,
+                            Collectors.counting()
+                    ));
 
-        response.setAverageRating(null);
-
-        return response;
-    }
-
-    // helper to parse "field,dir" to Sort
-    private Sort parseSort(String sort) {
-        if (sort == null || sort.isBlank()) return Sort.by("id").ascending();
-        String[] parts = sort.split(",");
-        if (parts.length == 1) return Sort.by(parts[0]).ascending();
-        return "desc".equalsIgnoreCase(parts[1]) ? Sort.by(parts[0]).descending() : Sort.by(parts[0]).ascending();
-    }
-
-    // mapping function Product -> ProductResponse
-    private final Function<Product, ProductResponse> toResponse = product -> {
-        ProductResponse r = new ProductResponse();
-        r.setId(product.getId());
-        r.setName(product.getName());
-        r.setDescription(product.getDescription());
-        r.setPrice(product.getPrice());
-        r.setQuantity(product.getQuantity());
-        r.setCategory(product.getCategory());
-        r.setCreateAt(product.getCreatedAt());
-        r.setUpdateAt(product.getUpdatedAt());
-        r.setAverageRating(null); // compute later if reviews exist
-        return r;
-    };
-
-    @Override
-    public Page<ProductResponse> listProducts(String q, String category, Double min, Double max,
-                                              int page, int size, String sort) {
-
-        Sort sortObj = parseSort(sort);
-        Pageable pageable = PageRequest.of(page, size, sortObj);
-
-        // Build combined specification
-        Specification<Product> spec = Specification.where(ProductSpecifications.nameContains(q))
-                .and(ProductSpecifications.categoryEquals(category))
-                .and(ProductSpecifications.priceGreaterOrEqual(min))
-                .and(ProductSpecifications.priceLessOrEqual(max));
-
-        Page<Product> productPage = productRepository.findAll(spec, pageable);
-
-        // Map Page<Product> to Page<ProductResponse>
-        return productPage.map(toResponse);
-    }
 
 }
+}
+
+
+
+

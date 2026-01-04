@@ -1,13 +1,9 @@
 package com.eshop.eshop.controller;
 
 import com.eshop.eshop.model.entity.Product;
-import com.eshop.eshop.model.entity.User;
-import com.eshop.eshop.model.entity.dto.ProductResponse;
 import com.eshop.eshop.service.ProductService;
-import com.eshop.eshop.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -53,6 +53,13 @@ public class UserController {
 
     }
 
+    //Get UserNames sorted List
+    @GetMapping("/desorted-names")
+    public ResponseEntity<List<String>> getDesortedUserNames(){
+        return ResponseEntity.ok(userService.getSortedNames());
+
+    }
+
     //get google email id list
     @GetMapping("/gmailid")
     public ResponseEntity<List<String>> grtGmailIds(){

@@ -59,10 +59,18 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public List<String> getDesortedNames(){
+        List<String> names = userRepository.findAllUserNames();
+
+        names.sort( (name1, name2) -> name2.compareToIgnoreCase(name1));
+
+        return names;
+    }
+
     public List<String> getSortedNames(){
         List<String> names = userRepository.findAllUserNames();
 
-        names.sort( (name1, name2) -> name1.compareToIgnoreCase(name2));
+        names.sort(String::compareToIgnoreCase);
 
         return names;
     }

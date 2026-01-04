@@ -1,23 +1,14 @@
 package com.eshop.eshop.service.impl;
 
 import com.eshop.eshop.model.entity.Product;
-import com.eshop.eshop.model.entity.User;
-import com.eshop.eshop.model.entity.dto.ProductResponse;
 import com.eshop.eshop.repository.ProductRepository;
-import com.eshop.eshop.repository.specs.ProductSpecifications;
 import com.eshop.eshop.service.ProductService;
 //import com.eshop.eshop.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service

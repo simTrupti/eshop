@@ -14,15 +14,17 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private Integer productId;
+
     // Many order items belong to one order
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    // Many order items belong to one product
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+//    // Many order items belong to one product
+//    @ManyToOne
+//    @JoinColumn(name = "product_id", nullable = false)
+//    private Product product;
 
     @Column(nullable = false)
     private int quantity;

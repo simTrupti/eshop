@@ -50,8 +50,8 @@ public class Product {
     private LocalDateTime updatedAt;
 
     // ---------- Relationships ----------
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
+//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<OrderItem> orderItems;
 
     // ---------- Lifecycle Callbacks ----------
     @PrePersist

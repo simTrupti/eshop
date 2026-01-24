@@ -1,6 +1,7 @@
 package com.eshop.eshop.controller;
 
 
+import com.eshop.eshop.dto.PlaceOrderRequest;
 import com.eshop.eshop.model.entity.Order;
 import com.eshop.eshop.service.OrderService;
 import jakarta.validation.Valid;
@@ -18,10 +19,15 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @PostMapping
-    public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
-        Order createdOrder = orderService.createOrder(order);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
+//    @PostMapping
+//    public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
+//        Order createdOrder = orderService.createOrder(order);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
+//    }
+
+    @PostMapping("/place")
+    public ResponseEntity<Order> placeOrder(@Valid @RequestBody PlaceOrderRequest request){
+        return ResponseEntity.ok(orderService.placeOrder(request));
     }
 
     @GetMapping("/orders")

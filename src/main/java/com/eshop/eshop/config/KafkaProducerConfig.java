@@ -1,5 +1,6 @@
 package com.eshop.eshop.config;
 
+import com.eshop.eshop.event.OrderPlacedEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, OrderPlacedEvent> producerFactory() {
 
         Map<String, Object> props = new HashMap<>();
 
@@ -28,7 +29,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
+    public KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

@@ -5,6 +5,9 @@ import com.eshop.eshop.client.ProductClient;
 import com.eshop.eshop.dto.OrderItemRequest;
 import com.eshop.eshop.dto.PlaceOrderRequest;
 import com.eshop.eshop.dto.ProductResponse;
+import com.eshop.eshop.event.OrderItemEvent;
+import com.eshop.eshop.event.OrderPlacedEvent;
+import com.eshop.eshop.kafka.OrderProducer;
 import com.eshop.eshop.model.entity.Order;
 import com.eshop.eshop.model.entity.OrderItem;
 import com.eshop.eshop.model.entity.Product;
@@ -29,6 +32,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ProductClient productClient;
+
+    @Autowired
+    private OrderProducer orderProducer;
 
     // ✅ Create Order
 //    @Override
@@ -112,7 +118,25 @@ public class OrderServiceImpl implements OrderService {
     orderItems.forEach(orderItem -> orderItem.setOrder(order));
     order.setOrderItems(orderItems);
 
-    return orderRepository.save(order);
+    Order savedOrder = orderRepository.save(order);
+
+        List<OrderItemEvent> eventItems = orderItems.stream()
+                .map(item -> new OrderItemEvent(
+                        item.getProductId(),
+                        item.getQuantity()
+                ))
+                .toList();
+
+        OrderPlacedEvent event = new OrderPlacedEvent(
+                savedOrder.getId(),
+                request.getUserId(),
+                savedOrder.getTotalAmount(),
+                eventItems
+        );
+
+        orderProducer.sendOrderPlacedEvent(event);
+
+        return savedOrder;
 }
 
 

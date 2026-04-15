@@ -16,6 +16,8 @@ import com.eshop.eshop.repository.OrderRepository;
 import com.eshop.eshop.service.OrderService;
 //import com.eshop.eshop.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,9 +48,9 @@ public class OrderServiceImpl implements OrderService {
 //    }
 
     @Override
-    public List<Order> getAllOrders() {
+    public Page<Order> getAllOrders(Pageable pageable) {
        // return orders;
-        return orderRepository.findAll();
+        return orderRepository.findAll(pageable);
     }
 
     @Override

@@ -1,98 +1,760 @@
-E-Shop Backend - Java 8 Spring Boot Project
+# 🛒 eShop --- Spring Boot E-Commerce Backend
 
-Project Overview
-This project is a complete backend implementation of an E-Commerce system using Java 8, Spring
-Boot, Maven, Spring Data JPA, and MySQL. The application follows clean architecture, REST
-standards, and enterprise-safe coding practices.
+A practical **e-commerce backend application** built with **Java 21,
+Spring Boot, Spring Data JPA, MySQL, Spring Security, JWT, Apache Kafka,
+and AI-assisted natural-language product search**.
 
-Modules Implemented
-• User Module
-• Product Module
-• Order Module
-• OrderItem Module
+The project started with core REST APIs and database persistence and has
+been extended with authentication, validation, centralized exception
+handling, cart/order workflows, event publishing, and an AI search
+layer.
 
-Technologies Used
-• Java 8
-• Spring Boot
-• Spring Data JPA
-• Maven
-• MySQL / H2
-• BCrypt Password Encoder
-• Hibernate Validator
-• REST APIs
-• Postman for API Testing
+------------------------------------------------------------------------
 
-Java 8 Features Applied
-• Optional to avoid NullPointerException
-• Lambda expressions
-• Functional interface usage in mapping
-• Clean service-to-controller data flow
-• Elimination of null returns
-• Functional style response handling
+## 🚀 Features
 
-Architecture Flow
-Controller → Service → Repository → Database. GlobalExceptionHandler handles all runtime and
-validation exceptions centrally.
+### Core E-Commerce
 
-User Module Summary
-Handles user registration, duplicate validation, password encryption, and retrieval of users. Uses
-Optional for safe fetching and BCrypt for password security.
+-   User management
+-   Product management
+-   Cart and cart-item management
+-   Order and order-item management
+-   MySQL database persistence
+-   JPA entity relationships
+-   REST APIs
 
-Product Module Summary
-Manages product creation, filtering, pagination, sorting, and DTO-based API responses.
-Implements Java 8 functional mapping using Function interface.
+### Backend Engineering
 
-Order Module Summary
-Handles order placement, listing orders, and fetching orders using Optional-based safe access.
+-   Layered architecture
+-   Spring Data JPA repositories
+-   DTO-based request/response models
+-   Jakarta Bean Validation
+-   Centralized exception handling
+-   Optional-based entity retrieval
+-   Pagination/filtering/sorting support in the product layer
+-   Postman API testing
 
-OrderItem Module Summary
-Handles creation and retrieval of order items, fully integrated with Order and Product entities using
-proper relationship mappings.
+### Security
 
-Validation Strategy
-Entity-level validation is applied using Jakarta Validation annotations like @NotBlank, @Min,
-@NotNull, @Positive, etc.
+-   User registration and login
+-   BCrypt password hashing
+-   JWT-based authentication
+-   JWT request filtering
+-   Spring Security configuration
 
-Exception Handling Strategy
-A centralized GlobalExceptionHandler is used to catch IllegalArgumentException and return clean
-HTTP 400 responses without cluttering controllers with try-catch blocks.
+### Event-Driven Processing
+
+-   Apache Kafka configuration
+-   Order-related events
+-   Kafka order producer
+
+### AI Integration
+
+-   Natural-language product search
+-   AI-assisted shopping intent extraction
+-   Structured search intent using `ShoppingIntent`
+-   AI-to-product-service communication through `ProductClient`
+-   REST communication using `RestTemplate`
+
+------------------------------------------------------------------------
+
+# 🏗️ Architecture
+
+The application follows a layered backend architecture:
+
+``` text
+Client / Postman
+       │
+       ▼
+ Controller
+       │
+       ▼
+ Service
+       │
+       ▼
+ Repository
+       │
+       ▼
+ MySQL
+```
+
+Additional integrations:
+
+``` text
+Authentication:
+
+Client
+  ↓
+AuthController
+  ↓
+AuthService
+  ↓
+BCrypt / JWT
+  ↓
+Security Filter
+  ↓
+Protected APIs
+```
+
+``` text
+AI Product Search:
+
+User's natural-language query
+          ↓
+     AiController
+          ↓
+       AiService
+          ↓
+     AI interpretation
+          ↓
+    ShoppingIntent
+          ↓
+     ProductClient
+          ↓
+      Product API
+```
+
+``` text
+Order Events:
+
+Order processing
+      ↓
+OrderPlacedEvent
+      ↓
+OrderProducer
+      ↓
+Apache Kafka
+```
+
+------------------------------------------------------------------------
+
+# 📦 Project Modules
+
+  -----------------------------------------------------------------------
+  Module                              Purpose
+  ----------------------------------- -----------------------------------
+  **User**                            User creation, retrieval,
+                                      registration and authentication
+
+  **Product**                         Product management and product
+                                      search/filter functionality
+
+  **Cart**                            Shopping cart and cart-item
+                                      management
+
+  **Order**                           Order creation and retrieval
+
+  **OrderItem**                       Products and quantities associated
+                                      with orders
+
+  **Authentication**                  Registration, login, BCrypt and JWT
+
+  **AI Search**                       Natural-language product discovery
+
+  **Kafka**                           Order-related event publishing
+
+  **Validation**                      Request/entity validation
+
+  **Exception Handling**              Centralized error handling
+  -----------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+# 🧩 Entity Relationships
+
+The core e-commerce domain is modeled using JPA relationships.
+
+``` text
+User
+ │
+ ├──────────< Order
+ │              │
+ │              └──────────< OrderItem >────────── Product
+ │
+ └────────── Cart
+                 │
+                 └──────────< CartItem >────────── Product
+```
+
+### Main relationships
+
+-   A **User** can have multiple orders.
+-   An **Order** contains multiple order items.
+-   Each **OrderItem** belongs to one order.
+-   Each **OrderItem** references a product.
+-   A **Cart** contains cart items.
+-   Cart items reference products.
+
+These relationships are mapped using JPA annotations such as:
+
+``` java
+@ManyToOne
+@OneToMany
+@JoinColumn
+```
+
+------------------------------------------------------------------------
+
+# 👤 User & Authentication
+
+The application includes user registration and authentication
+functionality.
+
+### Implemented concepts
+
+-   User registration
+-   Login
+-   Password hashing with BCrypt
+-   JWT token generation
+-   JWT request filtering
+-   Spring Security configuration
+
+### Authentication flow
+
+``` text
+Registration
+     ↓
+Password
+     ↓
+BCrypt hashing
+     ↓
+Database
+```
+
+``` text
+Login
+  ↓
+Credentials
+  ↓
+Authentication
+  ↓
+JWT
+  ↓
+Client
+  ↓
+JWT Filter
+  ↓
+Protected endpoint
+```
+
+Passwords are stored using BCrypt hashing rather than plain-text
+storage.
+
+------------------------------------------------------------------------
+
+# 🛍️ Product Module
+
+The Product module manages the application's product catalog.
+
+### Current functionality
+
+-   Create products
+-   Retrieve products
+-   Retrieve product by ID
+-   Product filtering/search-related functionality
+-   Pagination/sorting support
+-   DTO-based product responses
+-   Validation
+-   Database persistence
+
+The product layer also provides the data source used by the AI-powered
+search flow.
+
+------------------------------------------------------------------------
+
+# 🛒 Cart Module
+
+The Cart module represents the user's current shopping selection.
+
+``` text
+Cart
+ │
+ ├── CartItem → Product
+ ├── CartItem → Product
+ └── CartItem → Product
+```
+
+The cart is kept separate from the final order so that shopping activity
+and completed orders remain different concepts.
+
+------------------------------------------------------------------------
+
+# 📦 Order & OrderItem Modules
+
+Orders represent a user's purchase.
+
+``` text
+User
+ ↓
+Order
+ ↓
+OrderItem
+ ↓
+Product
+```
+
+JPA relationships connect the entities instead of manually maintaining
+only foreign-key IDs.
+
+The project also publishes order-related events through Kafka.
+
+------------------------------------------------------------------------
+
+# ⚡ Kafka & Event Publishing
+
+The project contains Kafka infrastructure for order-related event
+publishing.
+
+Current event-related components include:
+
+``` text
+OrderPlacedEvent
+OrderItemEvent
+OrderProducer
+KafkaProducerConfig
+```
+
+The current architecture is:
+
+``` text
+Order processing
+      ↓
+Create event
+      ↓
+Kafka Producer
+      ↓
+Kafka topic
+```
+
+This establishes a foundation for asynchronous features such as
+notifications, inventory processing, analytics, and other downstream
+processing.
+
+------------------------------------------------------------------------
+
+# 🤖 AI-Powered Natural-Language Product Search
+
+The project includes an AI layer that allows users to search for
+products using natural language instead of requiring them to construct
+exact search parameters.
+
+Example requests:
+
+``` text
+"Show me electronics under 5000"
+
+"Find running shoes below 3000"
+
+"I need a laptop under 80000"
+```
+
+### AI search architecture
+
+``` text
+Natural-language query
+          ↓
+     AiController
+          ↓
+       AiService
+          ↓
+    AI interpretation
+          ↓
+   ShoppingIntent
+          ↓
+     ProductClient
+          ↓
+      Product API
+          ↓
+    ProductResponse
+```
+
+The important architectural separation is:
+
+> **AI understands the user's intent; the product service remains
+> responsible for retrieving product data.**
+
+This keeps the AI layer separated from direct database access.
+
+------------------------------------------------------------------------
+
+# 🌐 ProductClient & REST Communication
+
+The project contains a `ProductClient` and `RestTemplateConfig`.
+
+The AI service can communicate with the product API through HTTP:
+
+``` text
+AiService
+   ↓
+ProductClient
+   ↓
+HTTP / REST
+   ↓
+Product API
+```
+
+This demonstrates service-to-service REST communication rather than
+coupling the AI layer directly to the product repository.
+
+------------------------------------------------------------------------
+
+# 🧾 DTO Layer
+
+The project uses DTOs to define API request and response models.
+
+Current DTO examples include:
+
+``` text
+AddToCartRequest
+AiSearchRequest
+LoginRequest
+OrderItemRequest
+PlaceOrderRequest
+ProductResponse
+RegisterRequest
+ShoppingIntent
+```
+
+DTOs help keep API contracts separate from database entities.
+
+------------------------------------------------------------------------
+
+# ✅ Validation
+
+The project uses Jakarta Bean Validation for validating application
+data.
+
+Examples include:
+
+``` java
+@NotBlank
+@NotNull
+@Positive
+@Min
+```
+
+Validation is used to prevent invalid input from reaching business
+logic.
+
+Examples include:
+
+-   Required fields
+-   Valid product values
+-   Positive prices
+-   Valid quantities
+-   Required request fields
+
+------------------------------------------------------------------------
+
+# 🚨 Global Exception Handling
+
+The application contains a centralized:
+
+``` text
+GlobalExceptionHandler
+```
+
+Instead of putting exception-handling logic inside every controller:
+
+``` text
+Controller
+    ↓
+Service
+    ↓
+Exception
+    ↓
+GlobalExceptionHandler
+    ↓
+HTTP error response
+```
+
+This keeps controllers cleaner and provides a consistent error-response
+mechanism.
+
+------------------------------------------------------------------------
+
+# 🗄️ Database & Persistence
+
+### Database
+
+**MySQL**
+
+### Persistence
+
+**Spring Data JPA + Hibernate**
+
+The project uses JPA entities and repositories to persist application
+data.
+
+Main domain entities include:
+
+``` text
+User
+Product
+Cart
+CartItem
+Order
+OrderItem
+```
+
+Hibernate manages the mapping between the Java entity model and MySQL
+tables.
+
+------------------------------------------------------------------------
+
+# 📁 Project Structure
+
+The current project follows a modular layered structure:
+
+``` text
+src/main/java/com/eshop/eshop
+│
+├── client
+│   ├── ProductClient
+│   └── RestTemplateConfig
+│
+├── config
+│   ├── AppConfig
+│   ├── JwtFilter
+│   ├── KafkaProducerConfig
+│   └── SecurityConfig
+│
+├── controller
+│   ├── AiController
+│   ├── AuthController
+│   ├── CartController
+│   ├── HomeController
+│   ├── OrderController
+│   ├── OrderItemController
+│   ├── ProductController
+│   └── UserController
+│
+├── dto
+│   ├── AddToCartRequest
+│   ├── AiSearchRequest
+│   ├── LoginRequest
+│   ├── OrderItemRequest
+│   ├── PlaceOrderRequest
+│   ├── ProductResponse
+│   ├── RegisterRequest
+│   └── ShoppingIntent
+│
+├── event
+│   ├── OrderItemEvent
+│   └── OrderPlacedEvent
+│
+├── exception
+│   └── GlobalExceptionHandler
+│
+├── kafka
+│   └── OrderProducer
+│
+├── model
+│   └── entity
+│       ├── Cart
+│       ├── CartItem
+│       ├── Order
+│       ├── OrderItem
+│       ├── Product
+│       └── User
+│
+├── repository
+│
+└── service
+    ├── AiService
+    ├── AuthService
+    ├── CartService
+    ├── OrderItemService
+    ├── OrderService
+    ├── ProductService
+    ├── UserService
+    │
+    └── impl
+        ├── AiServiceImpl
+        ├── AuthServiceImpl
+        ├── CartServiceImpl
+        ├── OrderItemServiceImpl
+        ├── OrderServiceImpl
+        └── ProductServiceImpl
+```
+
+------------------------------------------------------------------------
+
+# 🧪 API Testing
+
+The APIs are tested using **Postman**.
+
+Core API groups include:
+
+``` text
+/api/users
+/api/products
+/api/orders
+/api/orderitems
+/api/cart
+/api/auth
+/api/ai
+```
+
+The project follows REST conventions for request handling and HTTP
+responses.
+
+------------------------------------------------------------------------
+
+# ⚙️ Running the Project
+
+## Prerequisites
+
+-   Java 21
+-   Maven
+-   MySQL
+-   Apache Kafka for Kafka-dependent functionality
+
+## 1. Create the database
+
+``` sql
+CREATE DATABASE eshop_db;
+```
+
+## 2. Configure MySQL
+
+Example:
+
+``` properties
+spring.application.name=eshop
+
+spring.datasource.url=jdbc:mysql://localhost:3306/eshop_db
+spring.datasource.username=root
+spring.datasource.password=${DB_PASSWORD}
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+Keep passwords, API keys and JWT secrets outside the repository.
+
+## 3. Build
+
+``` bash
+mvn clean install -DskipTests
+```
+
+## 4. Run
+
+``` bash
+mvn spring-boot:run -DskipTests
+```
+
+The application uses port `8080` by default.
+
+------------------------------------------------------------------------
+
+# 🔒 Security Configuration
+
+Sensitive values should be provided through environment variables rather
+than committed to source control.
+
+For example:
+
+``` properties
+spring.datasource.password=${DB_PASSWORD}
+```
+
+Similarly, AI credentials and JWT secrets should be externalized.
+
+Do **not** commit:
+
+``` text
+database passwords
+API keys
+JWT secrets
+private credentials
+```
+
+to GitHub.
+
+------------------------------------------------------------------------
+
+# 🧠 Technical Concepts Practiced
+
+This project provided practical experience with:
+
+-   Java 21
+-   Spring Boot
+-   REST API design
+-   Dependency Injection
+-   Layered architecture
+-   Spring Data JPA
+-   Hibernate
+-   MySQL
+-   JPA entity relationships
+-   DTO design
+-   Bean Validation
+-   Global exception handling
+-   `Optional`
+-   Spring Security
+-   BCrypt
+-   JWT authentication
+-   Kafka producers and events
+-   REST client communication
+-   AI API integration
+-   Natural-language intent extraction
+-   Git/GitHub
+-   Postman API testing
+
+------------------------------------------------------------------------
+
+# 🔮 Future Enhancements
+
+The following areas can be developed further:
+
+-   Role-based authorization
+-   Complete product/order CRUD operations
+-   Inventory and stock management
+-   Order status tracking
+-   Payment integration
+-   Product reviews and ratings
+-   Wishlist
+-   Redis caching
+-   Kafka consumers
+-   Swagger/OpenAPI documentation
+-   JUnit and Mockito test coverage
+-   Docker / Docker Compose
+-   CI/CD
+-   Frontend integration
+-   More advanced AI recommendations
+
+------------------------------------------------------------------------
+
+# 🎯 Project Objective
+
+The objective of eShop is to build a realistic Java/Spring Boot backend
+while progressively introducing concepts used in modern backend systems.
+
+The project combines:
+
+``` text
+Traditional Backend Engineering
+            +
+Database Persistence
+            +
 Security
-Passwords are encrypted using BCryptPasswordEncoder before persisting to the database.
-API Testing
-All APIs are tested using Postman. REST standards with proper HTTP status codes are followed.
+            +
+Event-Driven Architecture
+            +
+AI Integration
+```
 
+rather than treating AI as a separate standalone feature.
 
+------------------------------------------------------------------------
 
+## 📌 Current Status
 
+**Active development / learning project**
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-Future Enhancements
-• Spring Security with JWT
-• Role-based authorization
-• Order tracking system
-• Product reviews & ratings
-• Admin dashboard
-• Caching using Redis
-Developer Learning Achievements
-• Converted legacy null-based code into Java 8 Optional-based services
-• Implemented clean layered architecture
-• Applied enterprise-grade exception handling
-• Built complete CRUD operations for E-Commerce
-• Understood end-to-end Spring Boot REST API development
+The core backend architecture, database persistence, entity
+relationships, authentication/security layer, validation and exception
+handling, cart/order modules, Kafka event infrastructure, and
+AI-assisted product search have been developed. Further
+production-oriented features and testing can be added incrementally.

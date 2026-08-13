@@ -5,6 +5,8 @@ import com.eshop.eshop.model.entity.User;
 import com.eshop.eshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -43,9 +45,9 @@ public class UserService {
    }
 
    // Get all users
-   public List<User> getAllUsers(){
+   public Page<User> getAllUsers(Pageable pageable){
 
-       return userRepository.findAll();
+       return userRepository.findAll(pageable);
    }
 
 //    public User getUserById(Integer id) {
@@ -75,13 +77,16 @@ public class UserService {
         return names;
     }
 
-    public List<String> getGoogleEmailId(){
-        List<String> emails = userRepository.findAllEmail();
+//    public Page<String> getGoogleEmailId(Pageable pageable){
+//        Page<String> emails = userRepository.findAllEmail(pageable);
+//
+//        Page<String> emailid = emails.stream().filter(email -> email.endsWith("@gmail.com")).toList();
+//
+//        return emailid;
+//    }
 
-        List<String> emailid = emails.stream().filter(email -> email.endsWith("@gmail.com")).toList();
 
-        return emailid;
-    }
-
+public Page<String> getGoogleEmailId(Pageable pageable) {
+    return userRepository.findEmailsByDomain("@gmail.com", pageable);
 }
-
+}

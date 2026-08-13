@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 public class ProductResponse {
 
     private Integer id;
-   // private String name;
-  //  private String description;
+    private String name;
+    private String description;
     private Double price;
     private Integer quantity;
-   // private String category;
+    private String category;
    // private LocalDateTime createAt;
    // private LocalDateTime updateAt;
    // private Double averageRating; // optional

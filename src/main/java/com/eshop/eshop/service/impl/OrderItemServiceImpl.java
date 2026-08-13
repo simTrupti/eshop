@@ -1,5 +1,6 @@
 package com.eshop.eshop.service.impl;
 
+import com.eshop.eshop.kafka.OrderProducer;
 import com.eshop.eshop.model.entity.OrderItem;
 import com.eshop.eshop.repository.OrderItemRepository;
 import com.eshop.eshop.service.OrderItemService;
@@ -17,6 +18,9 @@ public class OrderItemServiceImpl implements OrderItemService {
     //private List<OrderItem> orderItems = new ArrayList<>();
     @Autowired
     private OrderItemRepository orderItemRepository;
+
+    @Autowired
+    private OrderProducer orderProducer;
 
     @Override
     public OrderItem createOrderItem(OrderItem orderItem) {

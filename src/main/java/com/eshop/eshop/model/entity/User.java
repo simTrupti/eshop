@@ -28,14 +28,18 @@ public class User {
     @Column(unique = true)
     private String email;
 
-//    @Size(min = 8, message = "Password must be at least 8 characters long")
-//    private String password;
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @NotBlank(message = "Password cannot be blank")
+    private String password;
+
+    private String role;
 
     @NotBlank(message = "Address cannot be blank")
     private String address;
 
     @Pattern(regexp = "\\d{10}", message = "Phone number must be 10 digits")
     @Column(unique = true)
+    @NotBlank(message = "Phone cannot be blank")
     private String phone;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

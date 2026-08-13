@@ -5,6 +5,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class ProductClient {
 
@@ -31,5 +34,20 @@ public class ProductClient {
                 );
 
         return response.getBody();
+    }
+
+    public List<ProductResponse> searchProducts(String category, Double maxPrice) {
+
+        String url = "http://localhost:9090/api/products/search"
+                + "?category=" + category
+                + "&maxPrice=" + maxPrice;
+
+        ResponseEntity<ProductResponse[]> response =
+                restTemplate.getForEntity(
+                        url,
+                        ProductResponse[].class
+                );
+
+        return Arrays.asList(response.getBody());
     }
 }

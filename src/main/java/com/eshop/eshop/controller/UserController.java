@@ -5,6 +5,8 @@ import com.eshop.eshop.model.entity.User;
 import com.eshop.eshop.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +30,8 @@ public class UserController {
 
     // ✅ Get All Users
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<Page<User>> getAllUsers(Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllUsers(pageable));
 
     }
 
@@ -62,8 +64,8 @@ public class UserController {
 
     //get google email id list
     @GetMapping("/gmailid")
-    public ResponseEntity<List<String>> grtGmailIds(){
-        return  ResponseEntity.ok(userService.getGoogleEmailId());
+    public ResponseEntity<Page<String>> grtGmailIds(Pageable pageable){
+        return  ResponseEntity.ok(userService.getGoogleEmailId(pageable));
 
     }
 

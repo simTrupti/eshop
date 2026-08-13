@@ -5,6 +5,9 @@ import com.eshop.eshop.client.ProductClient;
 import com.eshop.eshop.dto.OrderItemRequest;
 import com.eshop.eshop.dto.PlaceOrderRequest;
 import com.eshop.eshop.dto.ProductResponse;
+import com.eshop.eshop.event.OrderItemEvent;
+import com.eshop.eshop.event.OrderPlacedEvent;
+import com.eshop.eshop.kafka.OrderProducer;
 import com.eshop.eshop.model.entity.Order;
 import com.eshop.eshop.model.entity.OrderItem;
 import com.eshop.eshop.model.entity.Product;
@@ -13,6 +16,8 @@ import com.eshop.eshop.repository.OrderRepository;
 import com.eshop.eshop.service.OrderService;
 //import com.eshop.eshop.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,6 +35,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductClient productClient;
 
+    @Autowired
+    private OrderProducer orderProducer;
+
     // ✅ Create Order
 //    @Override
 //    public Order createOrder(Order order) {
@@ -40,9 +48,9 @@ public class OrderServiceImpl implements OrderService {
 //    }
 
     @Override
-    public List<Order> getAllOrders() {
+    public Page<Order> getAllOrders(Pageable pageable) {
        // return orders;
-        return orderRepository.findAll();
+        return orderRepository.findAll(pageable);
     }
 
     @Override
@@ -112,7 +120,25 @@ public class OrderServiceImpl implements OrderService {
     orderItems.forEach(orderItem -> orderItem.setOrder(order));
     order.setOrderItems(orderItems);
 
-    return orderRepository.save(order);
+    Order savedOrder = orderRepository.save(order);
+
+        List<OrderItemEvent> eventItems = orderItems.stream()
+                .map(item -> new OrderItemEvent(
+                        item.getProductId(),
+                        item.getQuantity()
+                ))
+                .toList();
+
+        OrderPlacedEvent event = new OrderPlacedEvent(
+                savedOrder.getId(),
+                request.getUserId(),
+                savedOrder.getTotalAmount(),
+                eventItems
+        );
+
+        orderProducer.sendOrderPlacedEvent(event);
+
+        return savedOrder;
 }
 
 

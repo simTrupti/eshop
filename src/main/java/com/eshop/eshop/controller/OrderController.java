@@ -6,6 +6,8 @@ import com.eshop.eshop.model.entity.Order;
 import com.eshop.eshop.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +33,8 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = orderService.getAllOrders();
+    public ResponseEntity<Page<Order>> getAllOrders(Pageable pageable) {
+        Page<Order> orders = orderService.getAllOrders(pageable);
         return ResponseEntity.ok(orders);
     }
 

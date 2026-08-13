@@ -1,6 +1,7 @@
 package com.eshop.eshop.controller;
 
 import com.eshop.eshop.dto.AiSearchRequest;
+import com.eshop.eshop.dto.AiSearchResponse;
 import com.eshop.eshop.dto.ProductResponse;
 import com.eshop.eshop.dto.ShoppingIntent;
 import com.eshop.eshop.service.AiService;
@@ -20,7 +21,7 @@ public class AiController {
     private final AiService aiService;
 
     @PostMapping("/search")
-    public List<ProductResponse> search(@RequestBody AiSearchRequest  request){
+    public AiSearchResponse search(@RequestBody AiSearchRequest  request){
         return aiService.processSearch(request.getQuery());
     }
 }

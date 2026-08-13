@@ -48,13 +48,42 @@ layer.
 -   Order-related events
 -   Kafka order producer
 
-### AI Integration
+## 🤖 AI Tool Calling — Phase 1
 
 -   Natural-language product search
 -   AI-assisted shopping intent extraction
 -   Structured search intent using `ShoppingIntent`
 -   AI-to-product-service communication through `ProductClient`
 -   REST communication using `RestTemplate`
+
+### AI Tool Calling — Phase 2
+
+Implemented Gemini function calling to allow the AI to dynamically invoke backend product APIs instead of only extracting structured search criteria.
+
+### Flow
+
+User Query
+→ Gemini
+→ Function Call
+→ ProductClient
+→ Product Service
+→ Product Results
+→ Gemini
+→ Final AI Response
+
+### How it works
+
+1. User sends a natural-language product request through `/ai/search`.
+
+2. `AiServiceImpl` sends the request to Gemini along with a `searchProducts` tool definition.
+
+3. Gemini decides whether to call the tool and generates structured arguments such as:
+
+```json
+{
+  "category": "Electronics",
+  "maxPrice": 2000
+}
 
 ------------------------------------------------------------------------
 

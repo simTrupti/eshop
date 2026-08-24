@@ -50,4 +50,19 @@ public class ProductClient {
 
         return Arrays.asList(response.getBody());
     }
+
+    public List<ProductResponse> getAllProducts() {
+
+        String url = "http://localhost:9090/api/products/all";
+
+        ResponseEntity<ProductResponse[]> response =
+                restTemplate.getForEntity(
+                        url,
+                        ProductResponse[].class
+                );
+
+        return Arrays.asList(response.getBody());
+    }
+
+
 }

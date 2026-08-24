@@ -155,6 +155,20 @@ OrderProducer
 Apache Kafka
 ```
 
+### AI-Powered RAG Product Search
+
+Implemented Retrieval-Augmented Generation (RAG) for semantic product search.
+
+- Generated 768-dimensional product embeddings using Gemini Embeddings.
+- Stored product embeddings and metadata in Qdrant Vector Database.
+- Implemented semantic similarity search to retrieve relevant products.
+- Passed retrieved product context to Gemini to generate natural-language shopping responses.
+- Integrated the complete flow into the Spring Boot AI service.
+
+**RAG Flow:**
+
+User Query → Embedding → Qdrant Similarity Search → Retrieved Products → Gemini → Final Response
+
 ------------------------------------------------------------------------
 
 # 📦 Project Modules
